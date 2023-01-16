@@ -1,0 +1,44 @@
+plugins {
+	id 'application'
+}
+
+group = "io.github.parthappm"
+archivesBaseName = "${rootProject.name}"
+version = "1.0.0"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation "org.seleniumhq.selenium:selenium-java:4.7.2"
+	implementation "org.slf4j:slf4j-simple:2.0.5"
+}
+
+test {
+}
+
+java {
+	sourceCompatibility(JavaVersion.VERSION_11)
+	targetCompatibility(JavaVersion.VERSION_11)
+}
+
+application {
+	mainClass = 'io.github.parthappm.ultimatix.App'
+	executableDir = ""
+	distributions {
+		main {
+			contents {
+				from ("src/main/resources") {
+					into "resources"
+				}
+			}
+		}
+	}
+}
+
+jar {
+	manifest {
+		attributes "Main-Class": application.mainClass
+	}
+}

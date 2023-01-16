@@ -2,6 +2,3 @@
 /.idea
 build
 web_driver/*
-
-!gradle-wrapper.jar
-!gradle-wrapper.properties

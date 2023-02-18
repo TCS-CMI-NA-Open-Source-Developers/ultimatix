@@ -1,9 +1,6 @@
 package io.github.parthappm.ultimatix;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Properties;
 
 class UserProperties
@@ -17,37 +14,35 @@ class UserProperties
 	private UserProperties()
 	{
 		Properties properties = new Properties();
-		try
+		try (InputStream is = new FileInputStream("resources/application.properties"))
 		{
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			properties.load(new FileInputStream("resources/application.properties"));
+			properties.load(is);
+		}
+		catch (IOException | NullPointerException ignored) {}
+
+		this.username = properties.getProperty("username", "").trim();
+		this.password = properties.getProperty("password", "").trim();
+		this.browser = properties.getProperty("browser", "").trim();
+		this.driverPath = properties.getProperty("driverPath", "").trim();
+
+		// reading the username and password from console
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in)))
+		{
 			// setting the username
-			String username = properties.getProperty("username", "").trim();
-			if (username.equals(""))
+			if (this.username.equals(""))
 			{
 				System.out.print("Username: ");
 				this.username = br.readLine().trim();
 			}
-			else
-			{
-				this.username = username;
-			}
 			// setting the password
-			String password = properties.getProperty("password", "").trim();
-			if (password.equals(""))
+			if (this.password.equals(""))
 			{
 				System.out.print("Password for " + this.username + ": ");
-				// this.password = br.readLine().trim(); // use this statement instead of the below statement if running through an IDE
-				this.password = new String(System.console().readPassword()).trim();
-			}
-			else
-			{
-				this.password = password;
+				Console console = System.console();
+				this.password = (console == null ? br.readLine() : new String(System.console().readPassword())).trim();
 			}
 		}
-		catch (IOException ignored) {}
-		this.browser = properties.getProperty("browser", "").trim();
-		this.driverPath = properties.getProperty("driverPath", "").trim();
+		catch (IOException | NullPointerException ignored) {}
 	}
 
 	static UserProperties getInstance()
@@ -83,16 +78,16 @@ class UserProperties
 
 	String getDriverPath()
 	{
-		return this.driverPath.equals("") ? "msedgedriver.exe" : this.driverPath;
+		return this.driverPath;
 	}
 
 	String getUsername()
 	{
-		return this.username == null ? "" : this.username;
+		return this.username;
 	}
 
 	String getPassword()
 	{
-		return this.password == null ? "" : this.password;
+		return this.password;
 	}
 }
